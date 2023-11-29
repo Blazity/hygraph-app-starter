@@ -15,28 +15,28 @@
 
 2. [**Detailed Documentation**](#detailed-documentation)
    - [Setup](#setup)
-     - [`SetupPage` Component](#setuppage-component)
-     - [Connection with Hygraph](#connection-with-hygraph)
+     - `SetupPage` Component
+     - Connection with Hygraph
    - [Asset Field](#asset-field)
-     - [`AssetField` Component](#assetfield-component)
-     - [`AssetCardList` Component](#assetcardlist-component)
+     - `AssetField` Component
+     - `AssetCardList` Component
    - [Asset Dialog](#asset-dialog)
-     - [`AssetDialog` Component](#assetdialog-component)
-     - [`DialogTable` Component](#dialogtable-component)
+     - `AssetDialog` Component
+     - `DialogTable` Component
    - [Assets Preview Dialog](#assets-preview-dialog)
-     - [`AssetsPreviewDialog` Component](#assetspreviewdialog-component)
-     - [`SingleAssetPreview` Component](#singleassetpreview-component)
-     - [`MultipleAssetsPreview` Component](#multipleassetspreview-component)
+     - `AssetsPreviewDialog` Component
+     - `SingleAssetPreview` Component
+     - `MultipleAssetsPreview` Component
    - [Content Table View](#content-table-view)
-     - [`ContentTableCell` Component](#contenttablecell-component)
+     - `ContentTableCell` Component
    - [API Folder Structure and Functionality](#api-folder-structure-and-functionality)
-     - [API Constants](#api-constants)
-     - [Server Route](#server-route)
-     - [Usage of API Key](#usage-of-api-key)
-     - [Access to API Key](#access-to-api-key)
+     - API Constants
+     - Server Route
+     - Usage of API Key
+     - Access to API Key
    - [Providers Overview and Details](#providers-overview-and-details)
-     - [BaukastenProvider](#baukastenprovider)
-     - [HygraphProvider](#hygraphprovider)
+     - `BaukastenProvider`
+     - `HygraphProvider`
    - [Tailwind Setup and Hygraph Design System Integration](#tailwind-setup-and-hygraph-design-system-integration)
 
 # TL;DR Documentation
