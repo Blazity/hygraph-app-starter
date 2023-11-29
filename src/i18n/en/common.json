@@ -1,0 +1,31 @@
+{
+  "general": {
+    "assetThumbnailAlt": "Asset thumbnail"
+  },
+  "setup": {
+    "description": "To connect to your asset manager instance, you need to provide the following information:",
+    "clientIdLabel": "Client ID",
+    "clientSecretLabel": "Client secret",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "apiLabel": "API Key",
+    "saveButtonLabel": "Save config settings",
+    "saveButtonLoadingLabel": "Saving...",
+    "pimUrlLabel": "PIM URL",
+    "invalidCredentials": "Invalid credentials",
+    "errorToast": {
+      "title": "Error",
+      "description": "An error occurred:",
+      "actionBtnTitle": "Try again"
+    }
+  },
+  "assetPicker": {
+    "addAssetButtonLabel": "Add asset",
+    "updateAssetButtonLabel": "Update asset",
+    "passSelectionButtonLabel": "Close and pass selection"
+  },
+  "filters": {
+    "search": "Search",
+    "loading": "Loading"
+  }
+}
