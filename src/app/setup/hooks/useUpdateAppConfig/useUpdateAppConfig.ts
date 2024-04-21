@@ -4,7 +4,7 @@ import { useToast } from '@hygraph/baukasten';
 import { useTranslation } from 'react-i18next';
 import { AppConfig } from './useUpdateAppConfig.types';
 
-const useUpdateAppConfig = ({ apiKey }: AppConfig) => {
+const useUpdateAppConfig = ({ imgixBase }: AppConfig) => {
   const app = useApp();
   const { t } = useTranslation();
   const showToast = useToast();
@@ -13,7 +13,7 @@ const useUpdateAppConfig = ({ apiKey }: AppConfig) => {
     app.updateInstallation({
       status: 'COMPLETED',
       config: {
-        apiKey: appConfig.apiKey
+        imgixBase: appConfig.imgixBase
       }
     });
 
@@ -25,7 +25,7 @@ const useUpdateAppConfig = ({ apiKey }: AppConfig) => {
         title: t('setup.errorToast.title'),
         description: `${t('setup.errorToast.description')} ${error.message}`,
         actionBtnTitle: t('setup.errorToast.actionBtnTitle'),
-        onClick: () => mutate({ apiKey })
+        onClick: () => mutate({ imgixBase })
       });
     }
   });

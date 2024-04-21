@@ -1,3 +1,3 @@
 export interface AppConfig {
-  apiKey: string;
+  imgixBase: string;
 }

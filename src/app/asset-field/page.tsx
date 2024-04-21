@@ -17,7 +17,7 @@ import { isEmpty, omit } from 'lodash';
 import { AssetCardList } from '@/app/asset-field/components/AssetCardList/AssetCardList';
 import { ContentTableCell } from './components/ContentTableCell/ContentTableCell';
 import { FieldRelation } from '@hygraph/icons';
-import { Asset } from './components/AssetCard/AssetCard.types';
+import { Asset } from '../asset-dialog/page';
 
 const ASSET_MANAGER_DIALOG_ROUTE = './asset-dialog';
 const ASSETS_PREVIEW_DIALOG_ROUTE = './assets-preview-dialog';
@@ -25,6 +25,7 @@ const DIALOG_MAX_WIDTH = '1280px';
 
 const AssetField = () => {
   const { t } = useTranslation();
+  const { imgixBase } = useAppConfig();
   const {
     openDialog,
     onChange,
@@ -39,7 +40,15 @@ const AssetField = () => {
   }, [value]);
 
   useEffect(() => {
-    onChange(isList ? assets.map((asset) => omit(asset, 'id')) : omit(assets[0], 'id'));
+    if (!assets[0]) {
+      onChange(null);
+      return;
+    }
+    onChange(
+      isList
+        ? assets.map((asset) => ({ url: `${imgixBase}/${asset.handle}`, id: asset.id }))
+        : { url: `${imgixBase}/${assets[0].handle}`, id: assets[0].id }
+    );
   }, [assets, isList]);
 
   const config = useAppConfig();
@@ -115,14 +124,14 @@ const getInitialAssetsValue = (value: Nullable<Asset | Asset[]>) => {
   const fieldValue = isEmpty(value) ? null : value;
 
   if (Array.isArray(fieldValue)) {
-    return fieldValue.map((item) => ({ ...item, id: nanoid() }));
+    return fieldValue;
   }
 
   if (!fieldValue) {
     return [];
   }
 
-  return [{ ...fieldValue, id: nanoid() }];
+  return [fieldValue];
 };
 
 export default AssetField;

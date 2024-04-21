@@ -1,5 +1,5 @@
+import { Asset } from '@/app/asset-dialog/page';
 import { DragEndEvent } from '@dnd-kit/core/dist/types/events';
-import { Asset } from '../AssetCard/AssetCard.types';
 
 export interface AssetCardList {
   assets: Asset[];

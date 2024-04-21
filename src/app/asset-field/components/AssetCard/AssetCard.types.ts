@@ -1,9 +1,3 @@
-export interface Asset {
-  id: string;
-  name: string;
-  imageUrl: string;
-}
-
 export interface AssetCard {
   dragHandleProps?: { [x: string]: Function };
   id: string;

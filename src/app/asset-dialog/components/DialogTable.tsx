@@ -2,14 +2,12 @@ import { Box, Button, Flex, Grid, Pill } from '@hygraph/baukasten';
 import { FieldAsset } from '@hygraph/icons';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAssetsQuery } from '@/hooks/useAssetsQuery/useAssetsQuery';
-import { DialogTable, AssetThumbnail as AssetThumbnail, AssetsGrid } from './DialogTable.types';
-import { Asset } from '@/app/asset-field/components/AssetCard/AssetCard.types';
+import type { DialogTable, AssetThumbnail as AssetThumbnail, AssetsGrid } from './DialogTable.types';
+import { Asset } from '../page';
 
 const DialogTable: React.FC<DialogTable> = ({ onCloseDialog, isSingleSelect }) => {
   const [selectedAssets, setSelectedAssets] = useState<Asset[]>([]);
   const { t } = useTranslation();
-  const assets = useAssetsQuery();
 
   const handleSelectItem = (item: Asset) => {
     if (isSingleSelect) {
@@ -25,7 +23,7 @@ const DialogTable: React.FC<DialogTable> = ({ onCloseDialog, isSingleSelect }) =
 
   return (
     <Box padding="1.5rem">
-      <AssetsGrid assets={assets} handleSelectItem={handleSelectItem} selectedAssets={selectedAssets} />
+      <AssetsGrid assets={[]} handleSelectItem={handleSelectItem} selectedAssets={selectedAssets} />
 
       <Button
         className="mx-auto mt-10 block"

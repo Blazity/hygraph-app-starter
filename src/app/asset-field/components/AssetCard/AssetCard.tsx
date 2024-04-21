@@ -1,11 +1,9 @@
-import { Box, Card, Heading, IconButton, Flex } from '@hygraph/baukasten';
-import { Close, DragHandle, FieldAsset } from '@hygraph/icons';
 import { Icon } from '@/types/common';
-import { useTranslation } from 'react-i18next';
-import { AssetCard } from './AssetCard.types';
+import { Box, Card, Flex, IconButton } from '@hygraph/baukasten';
+import { Close, DragHandle, FieldAsset } from '@hygraph/icons';
+import type { AssetCard } from './AssetCard.types';
 
 const AssetCard = ({ dragHandleProps, onRemoveItem, name, id, isSingleAsset, imageUrl, isDragging }: AssetCard) => {
-
   const setCursor = (isSingleAsset: boolean, isDragging: boolean | undefined) => {
     if (isSingleAsset) {
       return 'default';
@@ -19,21 +17,25 @@ const AssetCard = ({ dragHandleProps, onRemoveItem, name, id, isSingleAsset, ima
   };
 
   return (
-    <Card className="flex max-h-[70px]">
-      <Box className="m-8 flex flex-col justify-center text-neutral-400" {...dragHandleProps}>
-        {(DragHandle as Icon)({
-          style: { fontSize: '0.8rem', cursor: setCursor(isSingleAsset, isDragging) }
-        })}
-      </Box>
-      <Flex justifyContent="center" alignItems="center" width={70} minWidth={70} height={70}>
+    <Card className="flex h-[70px] max-h-[70px]">
+      {!isSingleAsset && (
+        <Box className="m-8 flex flex-col justify-center text-neutral-400" {...dragHandleProps}>
+          {(DragHandle as Icon)({
+            style: { fontSize: '0.8rem', cursor: setCursor(isSingleAsset, isDragging) }
+          })}
+        </Box>
+      )}
+      <Flex justifyContent="center" alignItems="center" width={70} minWidth={70} height={70} ml={16}>
         {imageUrl ? (
-          <img src={imageUrl} className="h-[60px] w-[60px] object-cover" />
+          <img src={imageUrl} className="h-[70px] w-[70px] object-cover" />
         ) : (
           <Box as={FieldAsset} color="neutral.200" width={50} height={50} />
         )}
       </Flex>
-      <Flex className="px-8 py-16" alignItems="center">
-        <Heading className="text-[13px]/[16px] text-neutral-900">{name || ''}</Heading>
+      <Flex className="overflow-hidden" alignItems="center" ml={16}>
+        <p className="block overflow-hidden  text-ellipsis whitespace-nowrap text-sm font-medium text-neutral-500">
+          {name || ''}
+        </p>
       </Flex>
       <IconButton
         icon={Close as Icon}

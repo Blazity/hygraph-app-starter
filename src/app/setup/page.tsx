@@ -12,13 +12,13 @@ const SetupPage = () => {
   const config = useAppConfig();
   const { t } = useTranslation();
 
-  const [apiKey, setApiKey] = useState(config.apiKey);
+  const [imgixBase, setImgixBase] = useState(config.imgixBase);
 
   const { isUpdatingConfig, updateConfig } = useUpdateAppConfig({
-    apiKey
+    imgixBase
   });
 
-  const isButtonDisabled = !apiKey;
+  const isButtonDisabled = !imgixBase;
 
   return (
     <>
@@ -26,19 +26,20 @@ const SetupPage = () => {
         <Card className="mx-auto mb-32 w-[31rem] p-48">
           <Stack className="gap-24">
             <Image src="/hygraph-logo.webp" alt="Asset manager logo" width={50} height={50} />
-
-            <Text className="mb-32">{t('setup.description')}</Text>
           </Stack>
           <Box className="mb-24">
             {/*@ts-expect-error due to broken types*/}
             <Label>{t('setup.apiLabel')}</Label>
-            <Input value={apiKey} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setApiKey(e.target.value)} />
+            <Input
+              value={imgixBase}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImgixBase(e.target.value)}
+            />
           </Box>
 
           <Button
             className="self-start capitalize"
             size="large"
-            onClick={() => updateConfig({ apiKey })}
+            onClick={() => updateConfig({ imgixBase })}
             disabled={isButtonDisabled || isUpdatingConfig}
             loading={isUpdatingConfig}
             loadingText={t('setup.saveButtonLoadingLabel')}

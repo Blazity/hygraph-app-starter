@@ -3,12 +3,11 @@
     "assetThumbnailAlt": "Asset thumbnail"
   },
   "setup": {
-    "description": "To connect to your asset manager instance, you need to provide the following information:",
     "clientIdLabel": "Client ID",
     "clientSecretLabel": "Client secret",
     "usernameLabel": "Username",
     "passwordLabel": "Password",
-    "apiLabel": "API Key",
+    "apiLabel": "Imgix base url",
     "saveButtonLabel": "Save config settings",
     "saveButtonLoadingLabel": "Saving...",
     "pimUrlLabel": "PIM URL",

@@ -5,7 +5,7 @@ import { z } from 'zod';
 type Config = z.infer<typeof configSchema>;
 
 const configSchema = z.object({
-  apiKey: z.string(),
+  imgixBase: z.string()
 });
 
 const useAppConfig = () => {
@@ -16,7 +16,7 @@ const useAppConfig = () => {
 
     if (!parseResult.success) {
       return {
-        apiKey: '',
+        imgixBase: ''
       };
     }
     return parseResult.data;
