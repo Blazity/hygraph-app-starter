@@ -1,23 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
 import findIndex from 'lodash/findIndex';
+import { useEffect, useState } from 'react';
 
 import { arrayMove } from '@dnd-kit/sortable';
 import { Button } from '@hygraph/baukasten';
 import { ComponentType } from 'react';
 
-import { useFieldExtension } from '@hygraph/app-sdk-react';
-import { useTranslation } from 'react-i18next';
+import { AssetCardList } from '@/app/asset-field/components/AssetCardList/AssetCardList';
 import { useAppConfig } from '@/hooks/useAppConfig/useAppConfig';
 import { Nullable } from '@/types/common';
-import { nanoid } from 'nanoid';
-import { isEmpty, omit } from 'lodash';
-import { AssetCardList } from '@/app/asset-field/components/AssetCardList/AssetCardList';
-import { ContentTableCell } from './components/ContentTableCell/ContentTableCell';
+import { useFieldExtension } from '@hygraph/app-sdk-react';
 import { FieldRelation } from '@hygraph/icons';
+import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
 import { Asset } from '../asset-dialog/page';
+import { ContentTableCell } from './components/ContentTableCell/ContentTableCell';
 
 const ASSET_MANAGER_DIALOG_ROUTE = './asset-dialog';
 const ASSETS_PREVIEW_DIALOG_ROUTE = './assets-preview-dialog';

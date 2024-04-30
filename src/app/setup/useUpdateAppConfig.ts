@@ -2,7 +2,10 @@ import { useMutation } from '@tanstack/react-query';
 import { useApp } from '@hygraph/app-sdk-react';
 import { useToast } from '@hygraph/baukasten';
 import { useTranslation } from 'react-i18next';
-import { AppConfig } from './useUpdateAppConfig.types';
+
+export interface AppConfig {
+  imgixBase: string;
+}
 
 const useUpdateAppConfig = ({ imgixBase }: AppConfig) => {
   const app = useApp();

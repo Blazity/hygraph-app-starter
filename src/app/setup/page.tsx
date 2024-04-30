@@ -5,7 +5,7 @@ import { Box, Button, Card, Input, Label, Stack, Text } from '@hygraph/baukasten
 import { useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
-import { useUpdateAppConfig } from '@/app/setup/hooks/useUpdateAppConfig/useUpdateAppConfig';
+import { useUpdateAppConfig } from '@/app/setup/useUpdateAppConfig';
 import { useAppConfig } from '@/hooks/useAppConfig/useAppConfig';
 
 const SetupPage = () => {
