@@ -66,7 +66,7 @@ const ContentTableCellThumbnail = (asset: ImgixAsset) => {
       <img
         src={getResizedImgixUrl(url)}
         alt={t('general.assetThumbnailAlt')}
-        className="h-full w-full object-contain py-1 text-transparent"
+        className="h-full w-full object-cover pt-1 text-transparent"
       />
     );
   }
