@@ -1,91 +1,33 @@
 'use client';
 
-import { Config } from '@/hooks/useAppConfig/useAppConfig';
 import { useUiExtensionDialog } from '@hygraph/app-sdk-react';
-import { Box, DialogContent, Divider, Heading, IconButton, Pill } from '@hygraph/baukasten';
+import { Box, DialogContent, Divider, Heading, IconButton, Pill, Progress } from '@hygraph/baukasten';
 import { FieldRelation } from '@hygraph/icons';
-import { useQuery } from '@tanstack/react-query';
 import { uniqBy } from 'lodash';
 import { useState } from 'react';
-
-export type Asset = {
-  createdAt: string;
-  fileName: string;
-  handle: string;
-  height: number;
-  id: string;
-  size: number;
-  stage: string;
-  updatedAt: string;
-  width: number;
-  mimeType: string;
-  url: string;
-  createdBy: {
-    picture: string;
-    name: string;
-  };
-  updatedBy: {
-    picture: string;
-    name: string;
-  };
-};
+import { Asset, useHygraphAssets } from './useHygraphAssets';
 
 const AssetDialog = () => {
-  const { onCloseDialog, isSingleSelect, configuration, context } = useUiExtensionDialog<
+  const { onCloseDialog, isSingleSelect, context } = useUiExtensionDialog<
     unknown,
     {
       onCloseDialog: (assets: Asset[]) => void;
       isSingleSelect: boolean;
-      configuration: Config;
       context: { environment: { authToken: string; endpoint: string } };
     }
   >();
 
   const [selectedAssets, setSelectedAssets] = useState<Asset[]>([]);
 
-  const API = context.environment.endpoint;
+  const assets = useHygraphAssets({
+    apiBase: context.environment.endpoint,
+    authToken: context.environment.authToken
+  });
 
   const onSelect = (asset: Asset) => {
     if (isSingleSelect) return onCloseDialog([asset]);
     setSelectedAssets((assets) => uniqBy([...assets, asset], 'id'));
   };
-
-  const assets = useQuery({
-    queryKey: ['assets'],
-    queryFn: async () => {
-      const resp = await fetch(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${context.environment.authToken}` },
-        body: JSON.stringify({
-          query: `{
-            assets {
-              createdAt
-              fileName
-              handle
-              height
-              id
-              size
-              stage
-              updatedAt
-              width
-              mimeType
-              url
-              createdBy {
-                picture
-                name
-              }
-              updatedBy {
-                picture
-                name
-              }
-            }
-        }`
-        })
-      });
-      const data: any = await resp.json();
-      return data.data.assets as Asset[];
-    }
-  });
 
   return (
     <DialogContent padding="0" height="48rem">
@@ -97,6 +39,7 @@ const AssetDialog = () => {
         {selectedAssets.length} entries selected
       </Box>
       <Divider margin="0" />
+      {assets.isLoading && <Progress variant="slim" />}
       <table>
         <thead>
           <tr className="h-[28px] w-full border-b shadow-sm">
@@ -122,7 +65,10 @@ const AssetDialog = () => {
                 </td>
                 <td className=" min-w-[130px]  px-2 text-xs font-medium text-slate-500"></td>
                 <td className=" min-w-[80px] px-2 text-xs ">
-                  <img src={asset.url} className="max-h-[60px] w-[80px] object-cover" />
+                  <img
+                    src={getResizedHygraphUrl(asset.url, asset.handle)}
+                    className="max-h-[60px] w-[80px] object-cover"
+                  />
                 </td>
                 <td className=" min-w-[120px]  pl-2 text-xs font-medium">
                   <Pill maxWidth={110}>{asset.id}</Pill>
@@ -138,6 +84,10 @@ const AssetDialog = () => {
       </table>
     </DialogContent>
   );
+};
+
+const getResizedHygraphUrl = (url: string, handle: string) => {
+  return url.slice(0, -handle.length) + 'output=format:jpg/resize=width:59,height:59,fit:crop/' + handle;
 };
 
 export default AssetDialog;

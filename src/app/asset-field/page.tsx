@@ -15,8 +15,8 @@ import { useFieldExtension } from '@hygraph/app-sdk-react';
 import { FieldRelation } from '@hygraph/icons';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { Asset } from '../asset-dialog/page';
 import { ContentTableCell } from './components/ContentTableCell/ContentTableCell';
+import { Asset } from '../asset-dialog/useHygraphAssets';
 
 const ASSET_MANAGER_DIALOG_ROUTE = './asset-dialog';
 const ASSETS_PREVIEW_DIALOG_ROUTE = './assets-preview-dialog';
@@ -24,7 +24,7 @@ const DIALOG_MAX_WIDTH = '1280px';
 
 const AssetField = () => {
   const { t } = useTranslation();
-  const { imgixBase } = useAppConfig();
+  const config = useAppConfig();
   const {
     openDialog,
     onChange,
@@ -43,14 +43,12 @@ const AssetField = () => {
       onChange(null);
       return;
     }
-    onChange(
-      isList
-        ? assets.map((asset) => ({ url: `${imgixBase}/${asset.handle}`, id: asset.id }))
-        : { url: `${imgixBase}/${assets[0].handle}`, id: assets[0].id }
-    );
+    if (isList) {
+      onChange(assets.map((asset) => ({ url: `${config.imgixBase}/${asset.handle}`, id: asset.id })));
+      return;
+    }
+    onChange({ url: `${config.imgixBase}/${assets[0].handle}`, id: assets[0].id });
   }, [assets, isList]);
-
-  const config = useAppConfig();
 
   const handleOpenPreviewDialog = () => {
     openDialog(ASSETS_PREVIEW_DIALOG_ROUTE, {

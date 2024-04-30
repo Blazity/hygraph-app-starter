@@ -27,7 +27,7 @@ const AssetCard = ({ dragHandleProps, onRemoveItem, name, id, isSingleAsset, ima
       )}
       <Flex justifyContent="center" alignItems="center" width={70} minWidth={70} height={70} ml={16}>
         {imageUrl ? (
-          <img src={imageUrl} className="h-[70px] w-[70px] object-cover" />
+          <img src={getResizedImgixUrl(imageUrl)} className="h-[70px] w-[70px] object-cover" />
         ) : (
           <Box as={FieldAsset} color="neutral.200" width={50} height={50} />
         )}
@@ -46,6 +46,14 @@ const AssetCard = ({ dragHandleProps, onRemoveItem, name, id, isSingleAsset, ima
       />
     </Card>
   );
+};
+
+const getResizedImgixUrl = (url: string) => {
+  const params = new URLSearchParams({
+    w: '120',
+    h: '120'
+  });
+  return url + '?' + params.toString();
 };
 
 export { AssetCard };
