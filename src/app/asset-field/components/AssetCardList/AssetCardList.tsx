@@ -3,7 +3,21 @@ import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifi
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { DraggableAssetCardContainer } from '@/app/asset-field/components/DraggableAssetCardContainer/DraggableAssetCardContainer';
 import { AssetCard } from '@/app/asset-field/components/AssetCard/AssetCard';
-import type { AssetCardList, AssetCardWrapper } from './AssetCardList.types';
+import { DragEndEvent } from '@dnd-kit/core/dist/types/events';
+import { ImgixAsset } from '../../page';
+
+export interface AssetCardList {
+  assets: ImgixAsset[];
+  handleOnRemoveItem: (id: string) => void;
+  handleOnDragEnd: (event: DragEndEvent) => void;
+  isDraggingDisabled: boolean;
+}
+
+export interface AssetCardWrapper {
+  assets: ImgixAsset[];
+  handleOnRemoveItem: (id: string) => void;
+  handleOnDragEnd?: (event: DragEndEvent) => void;
+}
 
 const AssetCardList = ({ assets, handleOnRemoveItem, handleOnDragEnd, isDraggingDisabled }: AssetCardList) => {
   return (
@@ -36,7 +50,7 @@ const DraggableAssetCardWrapper = ({ assets, handleOnRemoveItem, handleOnDragEnd
             {({ dragHandleProps, isDragging }) => (
               <AssetCard
                 imageUrl={asset.url}
-                name={asset.fileName}
+                name={asset.id}
                 onRemoveItem={handleOnRemoveItem}
                 dragHandleProps={dragHandleProps}
                 isDragging={isDragging}
@@ -57,7 +71,7 @@ const NonDraggableAssetCardWrapper = ({ assets, handleOnRemoveItem }: AssetCardW
   return (
     <AssetCard
       imageUrl={assets[0].url}
-      name={assets[0].fileName}
+      name={assets[0].id}
       isSingleAsset
       onRemoveItem={handleOnRemoveItem}
       {...assets[0]}

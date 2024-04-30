@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-export type Asset = {
+export type HygraphAsset = {
   createdAt: string;
   fileName: string;
   handle: string;
@@ -56,7 +56,7 @@ export const useHygraphAssets = ({ apiBase, authToken }: { apiBase: string; auth
         })
       });
       const data: any = await resp.json();
-      return data.data.assets as Asset[];
+      return data.data.assets as HygraphAsset[];
     }
   });
 

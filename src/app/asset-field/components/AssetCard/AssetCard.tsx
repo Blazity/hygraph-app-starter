@@ -48,7 +48,7 @@ const AssetCard = ({ dragHandleProps, onRemoveItem, name, id, isSingleAsset, ima
   );
 };
 
-const getResizedImgixUrl = (url: string) => {
+export const getResizedImgixUrl = (url: string) => {
   const params = new URLSearchParams({
     w: '120',
     h: '120'

@@ -5,32 +5,33 @@ import { Box, DialogContent, Divider, Heading, IconButton, Pill, Progress } from
 import { FieldRelation } from '@hygraph/icons';
 import { uniqBy } from 'lodash';
 import { useState } from 'react';
-import { Asset, useHygraphAssets } from './useHygraphAssets';
+import { HygraphAsset, useHygraphAssets } from './useHygraphAssets';
 
 const AssetDialog = () => {
   const { onCloseDialog, isSingleSelect, context } = useUiExtensionDialog<
     unknown,
     {
-      onCloseDialog: (assets: Asset[]) => void;
+      onCloseDialog: (assets: HygraphAsset[]) => void;
       isSingleSelect: boolean;
       context: { environment: { authToken: string; endpoint: string } };
     }
   >();
 
-  const [selectedAssets, setSelectedAssets] = useState<Asset[]>([]);
+  const [selectedAssets, setSelectedAssets] = useState<HygraphAsset[]>([]);
 
   const assets = useHygraphAssets({
     apiBase: context.environment.endpoint,
     authToken: context.environment.authToken
   });
 
-  const onSelect = (asset: Asset) => {
+  const onSelect = (asset: HygraphAsset) => {
     if (isSingleSelect) return onCloseDialog([asset]);
     setSelectedAssets((assets) => uniqBy([...assets, asset], 'id'));
   };
 
   return (
     <DialogContent padding="0" height="48rem">
+      {assets.isLoading && <Progress variant="slim" margin={0} />}
       <Heading as="h1" className="p-24 text-xl font-semibold">
         Select Asset
       </Heading>
@@ -39,7 +40,6 @@ const AssetDialog = () => {
         {selectedAssets.length} entries selected
       </Box>
       <Divider margin="0" />
-      {assets.isLoading && <Progress variant="slim" />}
       <table>
         <thead>
           <tr className="h-[28px] w-full border-b shadow-sm">

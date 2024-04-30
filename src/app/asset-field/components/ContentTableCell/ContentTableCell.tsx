@@ -4,8 +4,13 @@ import { Error404, FieldAsset, MoreFill } from '@hygraph/icons';
 import { useEffect, useState } from 'react';
 import { Nullable } from '@/types/common';
 import { t } from 'i18next';
-import { ContentTableCell } from './ContentTableCell.types';
-import { Asset } from '../AssetCard/AssetCard.types';
+import { ImgixAsset } from '../../page';
+import { getResizedImgixUrl } from '../AssetCard/AssetCard';
+
+export interface ContentTableCell {
+  handleOpenPreviewDialog: () => void;
+  assets: ImgixAsset[];
+}
 
 const ContentTableCell = ({ handleOpenPreviewDialog, assets }: ContentTableCell) => {
   return (
@@ -32,21 +37,21 @@ const ContentTableCell = ({ handleOpenPreviewDialog, assets }: ContentTableCell)
   );
 };
 
-const ContentTableCellThumbnail = (asset: Asset) => {
+const ContentTableCellThumbnail = (asset: ImgixAsset) => {
   const [isLoading, setIsLoading] = useState<Nullable<boolean>>(true);
 
-  const { imageUrl } = asset;
+  const { url } = asset;
 
   useEffect(() => {
     const image = new Image();
-    image.src = imageUrl;
+    image.src = url;
     image.onload = () => {
       setIsLoading(false);
     };
     image.onerror = () => {
       setIsLoading(null);
     };
-  }, [imageUrl]);
+  }, [url]);
 
   if (isLoading) {
     return <Spinner size="spinner.xs" />;
@@ -56,10 +61,10 @@ const ContentTableCellThumbnail = (asset: Asset) => {
     return <Box as={Error404} color="neutral.200" width={40} height={40} />;
   }
 
-  if (imageUrl) {
+  if (url) {
     return (
       <img
-        src={imageUrl}
+        src={getResizedImgixUrl(url)}
         alt={t('general.assetThumbnailAlt')}
         className="h-full w-full object-contain py-1 text-transparent"
       />
