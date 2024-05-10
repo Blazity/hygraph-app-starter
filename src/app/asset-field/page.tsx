@@ -23,6 +23,7 @@ const DIALOG_MAX_WIDTH = '1280px';
 
 export type ImgixAsset = {
   url: string;
+  handle: string;
   id: string;
 };
 
@@ -48,10 +49,13 @@ const AssetField = () => {
       return;
     }
     if (isList) {
-      onChange(assets.map((asset) => ({ url: `${config.imgixBase}/${asset.id}`, id: asset.id })));
+      onChange(
+        assets.map((asset) => ({ url: `${config.imgixBase}/${asset.handle}`, id: asset.id, handle: asset.handle }))
+      );
       return;
     }
-    onChange({ url: `${config.imgixBase}/${assets[0].id}`, id: assets[0].id });
+    const asset = assets[0];
+    onChange({ url: `${config.imgixBase}/${asset.handle}`, id: asset.id, handle: asset.handle });
   }, [assets, isList]);
 
   const handleOpenPreviewDialog = () => {
