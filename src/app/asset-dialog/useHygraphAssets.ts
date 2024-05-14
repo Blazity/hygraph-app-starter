@@ -52,25 +52,25 @@ export const useHygraphAssets = ({
   resultsPerPage: number;
   pageNumber: number;
   includedIds?: string[];
-  excludedIds?: string[];
+  excludedIds: string[];
 }) => {
   const first = resultsPerPage;
   const skip = resultsPerPage * (pageNumber - 1);
 
-  const whereIdInFilter = includedIds ? `, where: { id_in: [${includedIds.map((id) => `"${id}"`).join(',')}]}` : '';
-  const whereIdNotInFilter = excludedIds
-    ? `, where: { id_not_in: [${excludedIds.map((id) => `"${id}"`).join(',')}]}`
-    : '';
+  const idNotInFilter = `id_not_in: [${excludedIds.map((id) => `"${id}"`).join(',')}]`;
+  const idInFilter = includedIds ? `,id_in: [${includedIds.map((id) => `"${id}"`).join(',')}]` : '';
+
+  const whereFilter = `,where: {  ${idNotInFilter} ${idInFilter} }`;
 
   const assets = useQuery({
-    queryKey: ['assets', { skip, first }],
+    queryKey: ['assets', { skip, first, excludedIds, includedIds }],
     queryFn: async () => {
       const resp = await fetch(apiBase, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
         body: JSON.stringify({
           query: `{
-              assetsConnection(first: ${first}, skip: ${skip} ${whereIdInFilter} ${whereIdNotInFilter}) {
+              assetsConnection(first: ${first}, skip: ${skip} ${whereFilter}) {
                 edges {
                   node {
                     createdAt
