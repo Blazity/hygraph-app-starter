@@ -2,13 +2,13 @@ import { useApp } from '@hygraph/app-sdk-react';
 import { useMemo } from 'react';
 import { z } from 'zod';
 
-type Config = z.infer<typeof configSchema>;
-
 const configSchema = z.object({
   imgixBase: z.string()
 });
 
-const useAppConfig = () => {
+export type AppConfig = z.infer<typeof configSchema>;
+
+export const useAppConfig = () => {
   const { installation } = useApp();
 
   const config = useMemo(() => {
@@ -24,6 +24,3 @@ const useAppConfig = () => {
 
   return config;
 };
-
-export { useAppConfig };
-export type { Config };

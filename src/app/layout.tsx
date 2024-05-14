@@ -1,8 +1,8 @@
-import { BaukastenProvider, HygraphProvider, ReactQueryProvider, I18nProvider } from '@/providers';
-import './globals.css';
+import { BaukastenProvider, HygraphProvider, I18nProvider, ReactQueryProvider } from '@/providers';
+import { cn } from '@/util';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import clsx from 'clsx';
+import './globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="light">
-      <body className={clsx(inter.variable, inter.className)}>
+      <body className={cn(inter.variable, inter.className)}>
         <ReactQueryProvider>
           <I18nProvider>
             <HygraphProvider>

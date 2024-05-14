@@ -1,7 +1,11 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Box } from '@hygraph/baukasten';
-import { SortableItemProps } from './DraggableAssetCardContainer.types';
+
+type SortableItemProps = {
+  id: string;
+  children: (props: { dragHandleProps: { [x: string]: Function }; isDragging: boolean }) => React.ReactNode;
+};
 
 const DraggableAssetCardContainer = ({ id, children }: SortableItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });

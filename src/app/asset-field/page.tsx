@@ -9,7 +9,7 @@ import { Button } from '@hygraph/baukasten';
 import { ComponentType } from 'react';
 
 import { AssetCardList } from '@/app/asset-field/components/AssetCardList/AssetCardList';
-import { useAppConfig } from '@/hooks/useAppConfig/useAppConfig';
+import { useAppConfig } from '@/hooks/useAppConfig';
 import { Nullable } from '@/types/common';
 import { useFieldExtension } from '@hygraph/app-sdk-react';
 import { FieldRelation } from '@hygraph/icons';

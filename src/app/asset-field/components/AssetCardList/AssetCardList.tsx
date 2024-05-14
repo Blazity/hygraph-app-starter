@@ -6,20 +6,25 @@ import { AssetCard } from '@/app/asset-field/components/AssetCard/AssetCard';
 import { DragEndEvent } from '@dnd-kit/core/dist/types/events';
 import { ImgixAsset } from '../../page';
 
-export interface AssetCardList {
+interface AssetCardListProps {
   assets: ImgixAsset[];
   handleOnRemoveItem: (id: string) => void;
   handleOnDragEnd: (event: DragEndEvent) => void;
   isDraggingDisabled: boolean;
 }
 
-export interface AssetCardWrapper {
+interface AssetCardWrapperProps {
   assets: ImgixAsset[];
   handleOnRemoveItem: (id: string) => void;
   handleOnDragEnd?: (event: DragEndEvent) => void;
 }
 
-const AssetCardList = ({ assets, handleOnRemoveItem, handleOnDragEnd, isDraggingDisabled }: AssetCardList) => {
+export const AssetCardList = ({
+  assets,
+  handleOnRemoveItem,
+  handleOnDragEnd,
+  isDraggingDisabled
+}: AssetCardListProps) => {
   return (
     <section className="flex flex-col gap-2">
       {isDraggingDisabled ? (
@@ -35,7 +40,7 @@ const AssetCardList = ({ assets, handleOnRemoveItem, handleOnDragEnd, isDragging
   );
 };
 
-const DraggableAssetCardWrapper = ({ assets, handleOnRemoveItem, handleOnDragEnd }: AssetCardWrapper) => {
+const DraggableAssetCardWrapper = ({ assets, handleOnRemoveItem, handleOnDragEnd }: AssetCardWrapperProps) => {
   const isSingleAsset = assets.length === 1;
 
   return (
@@ -65,7 +70,7 @@ const DraggableAssetCardWrapper = ({ assets, handleOnRemoveItem, handleOnDragEnd
   );
 };
 
-const NonDraggableAssetCardWrapper = ({ assets, handleOnRemoveItem }: AssetCardWrapper) => {
+const NonDraggableAssetCardWrapper = ({ assets, handleOnRemoveItem }: AssetCardWrapperProps) => {
   if (assets.length < 1) return null;
 
   return (
@@ -78,5 +83,3 @@ const NonDraggableAssetCardWrapper = ({ assets, handleOnRemoveItem }: AssetCardW
     />
   );
 };
-
-export { AssetCardList };

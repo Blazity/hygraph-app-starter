@@ -1,12 +1,12 @@
 'use client';
 
-import { Box, Button, Card, Input, Label, Stack, Text } from '@hygraph/baukasten';
+import { Box, Button, Card, Input, Label, Stack } from '@hygraph/baukasten';
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
 import { useUpdateAppConfig } from '@/app/setup/useUpdateAppConfig';
-import { useAppConfig } from '@/hooks/useAppConfig/useAppConfig';
+import { useAppConfig } from '@/hooks/useAppConfig';
+import Image from 'next/image';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const SetupPage = () => {
   const config = useAppConfig();
@@ -14,9 +14,7 @@ const SetupPage = () => {
 
   const [imgixBase, setImgixBase] = useState(config.imgixBase);
 
-  const { isUpdatingConfig, updateConfig } = useUpdateAppConfig({
-    imgixBase
-  });
+  const { isUpdatingConfig, updateConfig } = useUpdateAppConfig({ imgixBase });
 
   const isButtonDisabled = !imgixBase;
 

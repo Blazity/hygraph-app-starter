@@ -1,15 +1,16 @@
 'use client';
 
+import { cn } from '@/util';
 import { useUiExtensionDialog } from '@hygraph/app-sdk-react';
 import { Box, DialogContent, Divider, Heading, IconButton, Pill, Progress } from '@hygraph/baukasten';
 import { FieldRelation } from '@hygraph/icons';
 import { uniqBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { HygraphAsset, useHygraphAssets } from './useHygraphAssets';
 import AttachmentIcon from '/public/icons/attachment.svg';
 
-const AssetDialog = () => {
+export default function AssetDialog() {
   const { onCloseDialog, isSingleSelect, context } = useUiExtensionDialog<
     HygraphAsset[],
     {
@@ -52,18 +53,20 @@ const AssetDialog = () => {
       <table>
         <thead>
           <tr className="h-[28px] w-full border-b shadow-sm">
-            <td className="w-[60px] border-r"></td>
-            <td className="w-[130px] border-r px-2 text-xs font-medium text-slate-500">Stages</td>
-            <td className="w-[80px] border-r px-2 text-xs font-medium text-slate-500">Preview</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">ID</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Created At</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Updated At</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Handle</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">File Name</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Height</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Width</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Size</td>
-            <td className="w-[120px] border-r px-2 text-xs font-medium text-slate-500">Mime Type</td>
+            <TableHeader className="w-[60px]" />
+            <TableHeader className="w-[130px]">Stages</TableHeader>
+            <TableHeader className="w-[80px]">Preview</TableHeader>
+            <TableHeader>ID</TableHeader>
+            <TableHeader>Created At</TableHeader>
+            {/* TODO: created by */}
+            <TableHeader>Updated At</TableHeader>
+            {/* TODO: updated by */}
+            <TableHeader>Handle</TableHeader>
+            <TableHeader>File Name</TableHeader>
+            <TableHeader>Height</TableHeader>
+            <TableHeader>Width</TableHeader>
+            <TableHeader>Size</TableHeader>
+            <TableHeader>Mime Type</TableHeader>
           </tr>
         </thead>
 
@@ -80,37 +83,55 @@ const AssetDialog = () => {
                     onClick={() => onSelect(asset)}
                   />
                 </td>
-                <td className="min-w-[130px] px-2 text-m font-medium text-slate-500"></td>
-                <td className="min-w-[80px] px-2 text-m">
+                <TableCell className="min-w-[130px]"></TableCell>
+                <TableCell className="min-w-[80px]">
                   <img
                     src={getResizedHygraphUrl(asset.url, asset.handle)}
                     className="max-h-[60px] w-[80px] object-cover"
                   />
-                </td>
-                <td className="min-w-[120px] pl-2 text-m font-medium">
-                  <Pill maxWidth={110}>{asset.id}</Pill>
-                </td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">{formatDate(new Date(asset.createdAt))}</td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">{formatDate(new Date(asset.updatedAt))}</td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">{asset.handle}</td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">{asset.fileName}</td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">
+                </TableCell>
+                <TableCell>
+                  <Pill maxWidth={110} size="24">
+                    {asset.id}
+                  </Pill>
+                </TableCell>
+                <TableCell>{formatDate(new Date(asset.createdAt))}</TableCell>
+                <TableCell>{formatDate(new Date(asset.updatedAt))}</TableCell>
+                <TableCell>{asset.handle}</TableCell>
+                <TableCell>{asset.fileName}</TableCell>
+                <TableCell>
                   <pre>{asset.height}</pre>
-                </td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">
+                </TableCell>
+                <TableCell>
                   <pre>{asset.width}</pre>
-                </td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">
+                </TableCell>
+                <TableCell>
                   <pre>{prettyBytes(asset.size)}</pre>
-                </td>
-                <td className="min-w-[120px] whitespace-nowrap px-2 text-m">{asset.mimeType}</td>
-                <td className="w-full"></td>
+                </TableCell>
+                <TableCell>{asset.mimeType}</TableCell>
+                <TableCell className="w-full"></TableCell>
               </tr>
             );
           })}
         </tbody>
       </table>
     </DialogContent>
+  );
+}
+
+const TableHeader = ({ children, className }: { children?: ReactNode; className?: string }) => {
+  return (
+    <th className={cn('w-[120px] border-r px-2 text-left text-xs font-medium text-slate-500', className)}>
+      {children}
+    </th>
+  );
+};
+
+const TableCell = ({ children, className }: { children?: ReactNode; className?: string }) => {
+  return (
+    <td className={cn('min-w-[120px] max-w-[120px] overflow-hidden whitespace-nowrap px-2 text-m', className)}>
+      {children}
+    </td>
   );
 };
 
@@ -121,5 +142,3 @@ const getResizedHygraphUrl = (url: string, handle: string) => {
 const formatDate = (date: Date) => {
   return `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`;
 };
-
-export default AssetDialog;
