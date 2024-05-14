@@ -50,71 +50,73 @@ export default function AssetDialog() {
 
       <Divider margin="0" />
 
-      <table>
-        <thead>
-          <tr className="h-[28px] w-full border-b shadow-sm">
-            <TableHeader className="w-[60px]" />
-            <TableHeader className="w-[130px]">Stages</TableHeader>
-            <TableHeader className="w-[80px]">Preview</TableHeader>
-            <TableHeader>ID</TableHeader>
-            <TableHeader>Created At</TableHeader>
-            {/* TODO: created by */}
-            <TableHeader>Updated At</TableHeader>
-            {/* TODO: updated by */}
-            <TableHeader>Handle</TableHeader>
-            <TableHeader>File Name</TableHeader>
-            <TableHeader>Height</TableHeader>
-            <TableHeader>Width</TableHeader>
-            <TableHeader>Size</TableHeader>
-            <TableHeader>Mime Type</TableHeader>
-          </tr>
-        </thead>
+      <div className="overflow-auto">
+        <table>
+          <thead>
+            <tr className="h-[28px] w-full border-b shadow-sm">
+              <TableHeader className="w-[60px]" />
+              <TableHeader className="w-[130px]">Stages</TableHeader>
+              <TableHeader className="w-[80px]">Preview</TableHeader>
+              <TableHeader>ID</TableHeader>
+              <TableHeader>Created At</TableHeader>
+              {/* TODO: created by */}
+              <TableHeader>Updated At</TableHeader>
+              {/* TODO: updated by */}
+              <TableHeader>Handle</TableHeader>
+              <TableHeader>File Name</TableHeader>
+              <TableHeader>Height</TableHeader>
+              <TableHeader>Width</TableHeader>
+              <TableHeader>Size</TableHeader>
+              <TableHeader>Mime Type</TableHeader>
+            </tr>
+          </thead>
 
-        <tbody>
-          {assets.data?.map((asset) => {
-            return (
-              <tr className="h-[60px] overflow-x-auto border-b" key={asset.id}>
-                <td className="w-[60px]">
-                  <IconButton
-                    variant="ghost"
-                    variantColor="primary"
-                    icon={FieldRelation}
-                    mx={12}
-                    onClick={() => onSelect(asset)}
-                  />
-                </td>
-                <TableCell className="min-w-[130px]"></TableCell>
-                <TableCell className="min-w-[80px]">
-                  <img
-                    src={getResizedHygraphUrl(asset.url, asset.handle)}
-                    className="max-h-[60px] w-[80px] object-cover"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Pill maxWidth={110} size="24">
-                    {asset.id}
-                  </Pill>
-                </TableCell>
-                <TableCell>{formatDate(new Date(asset.createdAt))}</TableCell>
-                <TableCell>{formatDate(new Date(asset.updatedAt))}</TableCell>
-                <TableCell>{asset.handle}</TableCell>
-                <TableCell>{asset.fileName}</TableCell>
-                <TableCell>
-                  <pre>{asset.height}</pre>
-                </TableCell>
-                <TableCell>
-                  <pre>{asset.width}</pre>
-                </TableCell>
-                <TableCell>
-                  <pre>{prettyBytes(asset.size)}</pre>
-                </TableCell>
-                <TableCell>{asset.mimeType}</TableCell>
-                <TableCell className="w-full"></TableCell>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+          <tbody>
+            {assets.data?.map((asset) => {
+              return (
+                <tr className="h-[60px] overflow-x-auto border-b" key={asset.id}>
+                  <td className="w-[60px]">
+                    <IconButton
+                      variant="ghost"
+                      variantColor="primary"
+                      icon={FieldRelation}
+                      mx={12}
+                      onClick={() => onSelect(asset)}
+                    />
+                  </td>
+                  <TableCell className="min-w-[130px]"></TableCell>
+                  <TableCell className="min-w-[80px]">
+                    <img
+                      src={getResizedHygraphUrl(asset.url, asset.handle)}
+                      className="max-h-[60px] w-[80px] object-cover"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Pill maxWidth={110} size="24">
+                      {asset.id}
+                    </Pill>
+                  </TableCell>
+                  <TableCell>{formatDate(new Date(asset.createdAt))}</TableCell>
+                  <TableCell>{formatDate(new Date(asset.updatedAt))}</TableCell>
+                  <TableCell>{asset.handle}</TableCell>
+                  <TableCell>{asset.fileName}</TableCell>
+                  <TableCell>
+                    <pre>{asset.height}</pre>
+                  </TableCell>
+                  <TableCell>
+                    <pre>{asset.width}</pre>
+                  </TableCell>
+                  <TableCell>
+                    <pre>{prettyBytes(asset.size)}</pre>
+                  </TableCell>
+                  <TableCell>{asset.mimeType}</TableCell>
+                  <TableCell className="w-full"></TableCell>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </DialogContent>
   );
 }
