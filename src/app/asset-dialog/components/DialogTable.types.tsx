@@ -1,17 +1,17 @@
-import { Asset } from '@/app/asset-field/components/AssetCard/AssetCard.types';
+import { HygraphAsset } from '../useHygraphAssets';
 
-export interface DialogTable {
-  onCloseDialog: (selectedItems: Asset[]) => void;
+export interface DialogTableProps {
+  onCloseDialog: (selectedItems: HygraphAsset[]) => void;
   isSingleSelect: boolean;
 }
 
-export interface AssetThumbnail {
-  asset: Asset;
+export interface AssetThumbnailProps {
+  asset: HygraphAsset;
   isSelected: boolean;
 }
 
-export interface AssetsGrid {
-  assets: Asset[];
-  handleSelectItem: (asset: Asset) => void;
-  selectedAssets: Asset[];
+export interface AssetsGridProps {
+  assets: HygraphAsset[];
+  handleSelectItem: (asset: HygraphAsset) => void;
+  selectedAssets: HygraphAsset[];
 }

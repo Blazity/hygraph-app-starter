@@ -2,14 +2,18 @@ import { Box, Button, Flex, Grid, Pill } from '@hygraph/baukasten';
 import { FieldAsset } from '@hygraph/icons';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DialogTable, AssetThumbnail as AssetThumbnail, AssetsGrid } from './DialogTable.types';
-import { Asset } from '../page';
+import type {
+  DialogTableProps,
+  AssetThumbnailProps as AssetThumbnailProps,
+  AssetsGridProps
+} from './DialogTable.types';
+import { HygraphAsset } from '../useHygraphAssets';
 
-const DialogTable: React.FC<DialogTable> = ({ onCloseDialog, isSingleSelect }) => {
-  const [selectedAssets, setSelectedAssets] = useState<Asset[]>([]);
+const DialogTable: React.FC<DialogTableProps> = ({ onCloseDialog, isSingleSelect }) => {
+  const [selectedAssets, setSelectedAssets] = useState<HygraphAsset[]>([]);
   const { t } = useTranslation();
 
-  const handleSelectItem = (item: Asset) => {
+  const handleSelectItem = (item: HygraphAsset) => {
     if (isSingleSelect) {
       setSelectedAssets([item]);
     } else {
@@ -37,7 +41,7 @@ const DialogTable: React.FC<DialogTable> = ({ onCloseDialog, isSingleSelect }) =
   );
 };
 
-const AssetThumbnail = ({ asset, isSelected }: AssetThumbnail) => {
+const AssetThumbnail = ({ asset, isSelected }: AssetThumbnailProps) => {
   const { t } = useTranslation();
   const { imageUrl, name } = asset;
 
@@ -66,7 +70,7 @@ const AssetThumbnail = ({ asset, isSelected }: AssetThumbnail) => {
   );
 };
 
-const AssetsGrid = ({ assets, handleSelectItem, selectedAssets }: AssetsGrid) => {
+const AssetsGrid = ({ assets, handleSelectItem, selectedAssets }: AssetsGridProps) => {
   return (
     <Grid gridTemplateColumns="repeat(4, 1fr)" gap="8">
       {assets.map((asset, index) => (
@@ -86,4 +90,4 @@ const AssetsGrid = ({ assets, handleSelectItem, selectedAssets }: AssetsGrid) =>
   );
 };
 
-export { DialogTable };
+export { DialogTableProps as DialogTable };
