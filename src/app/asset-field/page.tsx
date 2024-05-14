@@ -72,7 +72,7 @@ const AssetField = () => {
       disableOverlayClick: false,
       maxWidth: DIALOG_MAX_WIDTH,
       configuration: config,
-      selectedAssetId: assets[0]?.id
+      excludedAssets: assets.map((asset) => asset.id)
     }).then((newItems) => {
       if (!newItems) return;
 
