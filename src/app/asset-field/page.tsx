@@ -71,7 +71,8 @@ const AssetField = () => {
       isSingleSelect: !isList,
       disableOverlayClick: false,
       maxWidth: DIALOG_MAX_WIDTH,
-      configuration: config
+      configuration: config,
+      selectedAssetId: assets[0]?.id
     }).then((newItems) => {
       if (!newItems) return;
 

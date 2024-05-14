@@ -11,10 +11,11 @@ import { HygraphAsset, useHygraphAssets } from './useHygraphAssets';
 import AttachmentIcon from '/public/icons/attachment.svg';
 
 export default function AssetDialog() {
-  const { onCloseDialog, isSingleSelect, context } = useUiExtensionDialog<
+  const { onCloseDialog, isSingleSelect, context, selectedAssetId } = useUiExtensionDialog<
     HygraphAsset[],
     {
       isSingleSelect: boolean;
+      selectedAssetId?: string;
       context: { environment: { authToken: string; endpoint: string } };
     }
   >();
@@ -31,10 +32,18 @@ export default function AssetDialog() {
     setSelectedAssets((assets) => uniqBy([...assets, asset], 'id'));
   };
 
+  if (assets.isLoading || !assets.data) {
+    return (
+      <DialogContent padding="0" height="48rem">
+        <Progress variant="slim" margin={0} />
+      </DialogContent>
+    );
+  }
+
+  const filteredAssets = isSingleSelect ? assets.data.filter((asset) => asset.id !== selectedAssetId) : assets.data;
+
   return (
     <DialogContent padding="0" height="48rem">
-      {assets.isLoading && <Progress variant="slim" margin={0} />}
-
       <div className="flex items-center space-x-12 p-24">
         <AttachmentIcon className="h-32 w-32 rounded bg-brand-100 p-2 text-brand-500" />
         <Heading as="h4" className="text-lg font-medium">
@@ -72,7 +81,7 @@ export default function AssetDialog() {
           </thead>
 
           <tbody>
-            {assets.data?.map((asset) => {
+            {filteredAssets.map((asset) => {
               return (
                 <tr className="h-[60px] overflow-x-auto border-b" key={asset.id}>
                   <td className="w-[60px]">
