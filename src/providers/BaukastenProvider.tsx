@@ -7,8 +7,22 @@ interface BaukastenProvider {
   global?: boolean;
 }
 
+const font =
+  'var(--font-inter), -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji';
+
 const BaukastenProvider = ({ children }: BaukastenProvider) => {
-  return <BaukastenThemeProvider>{children}</BaukastenThemeProvider>;
+  return (
+    <BaukastenThemeProvider
+      themeOverride={{
+        fonts: {
+          body: font,
+          heading: font
+        }
+      }}
+    >
+      {children}
+    </BaukastenThemeProvider>
+  );
 };
 
 export { BaukastenProvider };

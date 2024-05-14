@@ -2,8 +2,12 @@ import { BaukastenProvider, HygraphProvider, ReactQueryProvider, I18nProvider } 
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import clsx from 'clsx';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter'
+});
 
 export const metadata: Metadata = {
   title: 'Asset Manager',
@@ -13,13 +17,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="light">
-      <body className={inter.className}>
+      <body className={clsx(inter.variable, inter.className)}>
         <ReactQueryProvider>
           <I18nProvider>
             <HygraphProvider>
-              <BaukastenProvider global>
-                {children}
-              </BaukastenProvider>
+              <BaukastenProvider global>{children}</BaukastenProvider>
             </HygraphProvider>
           </I18nProvider>
         </ReactQueryProvider>
