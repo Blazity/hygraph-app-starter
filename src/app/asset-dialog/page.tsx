@@ -90,6 +90,7 @@ export default function AssetDialog() {
               size="small"
               onClick={() => {
                 setSelectedAssetsSnapshot(selectedAssets);
+                setPage(1);
                 setShowOnlySelectedAssets(!showOnlySelectedAssets);
               }}
             >
