@@ -2,13 +2,23 @@
 
 import { cn } from '@/util';
 import { useUiExtensionDialog } from '@hygraph/app-sdk-react';
-import { Box, DialogContent, Divider, Heading, IconButton, Pill, Progress } from '@hygraph/baukasten';
+import { Box, Button, DialogContent, Divider, Heading, IconButton, Pill, Progress } from '@hygraph/baukasten';
 import { FieldRelation } from '@hygraph/icons';
 import { uniqBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useState, type ReactNode } from 'react';
 import { HygraphAsset, useHygraphAssets } from './useHygraphAssets';
 import AttachmentIcon from '/public/icons/attachment.svg';
+
+const filterAssets = (assets: HygraphAsset[], selectedAssetIds: string[], mode: 'exclude' | 'include') => {
+  if (!selectedAssetIds.length) return assets;
+
+  if (mode === 'exclude') {
+    return assets.filter((asset) => !selectedAssetIds.includes(asset.id));
+  }
+
+  return assets.filter((asset) => selectedAssetIds.includes(asset.id));
+};
 
 export default function AssetDialog() {
   const { onCloseDialog, isSingleSelect, context, selectedAssetId } = useUiExtensionDialog<
@@ -21,6 +31,7 @@ export default function AssetDialog() {
   >();
 
   const [selectedAssets, setSelectedAssets] = useState<HygraphAsset[]>([]);
+  const [showOnlySelectedAssets, setShowOnlySelectedAssets] = useState(false);
 
   const assets = useHygraphAssets({
     apiBase: context.environment.endpoint,
@@ -28,8 +39,15 @@ export default function AssetDialog() {
   });
 
   const onSelect = (asset: HygraphAsset) => {
-    if (isSingleSelect) return onCloseDialog([asset]);
+    if (isSingleSelect) {
+      return onCloseDialog([asset]);
+    }
+
     setSelectedAssets((assets) => uniqBy([...assets, asset], 'id'));
+  };
+
+  const onDeselect = (asset: HygraphAsset) => {
+    setSelectedAssets((assets) => assets.filter((selectedAsset) => selectedAsset.id !== asset.id));
   };
 
   if (assets.isLoading || !assets.data) {
@@ -40,7 +58,16 @@ export default function AssetDialog() {
     );
   }
 
-  const filteredAssets = isSingleSelect ? assets.data.filter((asset) => asset.id !== selectedAssetId) : assets.data;
+  const selectedAssetIds = isSingleSelect
+    ? selectedAssetId
+      ? [selectedAssetId]
+      : []
+    : selectedAssets.map((asset) => asset.id);
+
+  const filteredAssets =
+    isSingleSelect || showOnlySelectedAssets
+      ? filterAssets(assets.data, selectedAssetIds, isSingleSelect ? 'exclude' : 'include')
+      : assets.data;
 
   return (
     <DialogContent padding="0" height="48rem">
@@ -53,8 +80,25 @@ export default function AssetDialog() {
 
       <Divider margin="0" />
 
-      <Box px="24px" py="8px" className="text-m">
-        {selectedAssets.length} entries selected
+      <Box px="24px" py="8px" className="flex space-x-2 text-m">
+        <p className="flex h-24 items-center">{selectedAssets.length} entries selected</p>
+
+        {selectedAssets.length > 0 ? (
+          <>
+            <Button variant="ghost" variantColor="secondary" size="small" onClick={() => setSelectedAssets([])}>
+              Clear selection
+            </Button>
+
+            <Button
+              variant="ghost"
+              variantColor="secondary"
+              size="small"
+              onClick={() => setShowOnlySelectedAssets(!showOnlySelectedAssets)}
+            >
+              {showOnlySelectedAssets ? 'Show all entries' : 'Show selected entries'}
+            </Button>
+          </>
+        ) : null}
       </Box>
 
       <Divider margin="0" />
@@ -63,7 +107,23 @@ export default function AssetDialog() {
         <table>
           <thead>
             <tr className="h-[28px] w-full border-b shadow-sm">
-              <TableHeader className="w-[60px]" />
+              <TableHeader className="w-[60px]">
+                {!isSingleSelect ? (
+                  <div className="grid place-items-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedAssets.length === assets.data.length}
+                      onChange={() => {
+                        if (selectedAssets.length === assets.data.length) {
+                          return setSelectedAssets([]);
+                        }
+
+                        setSelectedAssets(filteredAssets);
+                      }}
+                    />
+                  </div>
+                ) : null}
+              </TableHeader>
               <TableHeader className="w-[130px]">Stages</TableHeader>
               <TableHeader className="w-[80px]">Preview</TableHeader>
               <TableHeader>ID</TableHeader>
@@ -82,17 +142,35 @@ export default function AssetDialog() {
 
           <tbody>
             {filteredAssets.map((asset) => {
+              const isSelected = selectedAssets.some((selectedAsset) => selectedAsset.id === asset.id);
+
               return (
                 <tr className="h-[60px] overflow-x-auto border-b" key={asset.id}>
-                  <td className="w-[60px]">
-                    <IconButton
-                      variant="ghost"
-                      variantColor="primary"
-                      icon={FieldRelation}
-                      mx={12}
-                      onClick={() => onSelect(asset)}
-                    />
-                  </td>
+                  <TableCell className="min-w-[60px]">
+                    {isSingleSelect ? (
+                      <IconButton
+                        variant="ghost"
+                        variantColor="primary"
+                        icon={FieldRelation}
+                        mx={12}
+                        onClick={() => onSelect(asset)}
+                      />
+                    ) : (
+                      <div className="grid place-items-center">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => {
+                            if (isSelected) {
+                              return onDeselect(asset);
+                            }
+
+                            onSelect(asset);
+                          }}
+                        />
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className="min-w-[130px]"></TableCell>
                   <TableCell className="min-w-[80px]">
                     <img
@@ -119,12 +197,19 @@ export default function AssetDialog() {
                     <pre>{prettyBytes(asset.size)}</pre>
                   </TableCell>
                   <TableCell>{asset.mimeType}</TableCell>
-                  <TableCell className="w-full"></TableCell>
                 </tr>
               );
             })}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex justify-end p-24">
+        {!isSingleSelect ? (
+          <Button onClick={() => onCloseDialog(selectedAssets)} size="large" disabled={selectedAssets.length === 0}>
+            Add selected assets {selectedAssets.length > 1 ? `(${selectedAssets.length})` : ''}
+          </Button>
+        ) : null}
       </div>
     </DialogContent>
   );
