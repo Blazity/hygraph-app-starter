@@ -77,6 +77,9 @@ importers:
       react-i18next:
         specifier: ^13.3.1
         version: 13.5.0(i18next@23.11.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      remeda:
+        specifier: ^1.61.0
+        version: 1.61.0
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0

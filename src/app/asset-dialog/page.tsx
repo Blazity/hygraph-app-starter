@@ -3,26 +3,23 @@
 import { Checkbox } from '@/components/checkbox';
 import { cn } from '@/util';
 import { useUiExtensionDialog } from '@hygraph/app-sdk-react';
-import { Box, Button, DialogContent, Divider, Heading, IconButton, Pill, Progress } from '@hygraph/baukasten';
+import { Box, Button, Divider, Heading, IconButton, Pill, Progress } from '@hygraph/baukasten';
 import { FieldRelation } from '@hygraph/icons';
-import { uniqBy } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useState, type ReactNode } from 'react';
+import { uniqueBy } from 'remeda';
 import { Pagination } from './components/pagination';
+import { User } from './components/user';
 import { HygraphAsset, useHygraphAssets } from './useHygraphAssets';
 import AttachmentIcon from '/public/icons/attachment.svg';
 
-function User({ name, picture }: { name: string; picture?: string }) {
-  return (
-    <div className="flex items-center space-x-1">
-      {picture ? <img src={picture} className="h-24 w-24 rounded-full" /> : null}
-      <span>{name}</span>
-    </div>
-  );
-}
-
 export default function AssetDialog() {
-  const { onCloseDialog, isSingleSelect, context, excludedAssets } = useUiExtensionDialog<
+  const {
+    onCloseDialog: closeDialogWithResult,
+    isSingleSelect,
+    context,
+    excludedAssets
+  } = useUiExtensionDialog<
     HygraphAsset[],
     {
       isSingleSelect: boolean;
@@ -47,37 +44,36 @@ export default function AssetDialog() {
     excludedIds: excludedAssets
   });
 
-  const onSelect = (asset: HygraphAsset) => {
-    if (isSingleSelect) {
-      return onCloseDialog([asset]);
-    }
-
-    setSelectedAssets((assets) => uniqBy([...assets, asset], 'id'));
+  const addToSelection = (asset: HygraphAsset) => {
+    setSelectedAssets((assets) => uniqueBy([...assets, asset], (asset) => asset.id));
   };
 
-  const onDeselect = (asset: HygraphAsset) => {
+  const removeFromSelection = (asset: HygraphAsset) => {
     setSelectedAssets((assets) => assets.filter((selectedAsset) => selectedAsset.id !== asset.id));
+  };
+
+  const onSelect = (asset: HygraphAsset) => {
+    if (isSingleSelect) {
+      return closeDialogWithResult([asset]);
+    }
+
+    addToSelection(asset);
   };
 
   if (assetsQuery.isLoading || !assetsQuery.data) {
     return (
-      <DialogContent padding="0" height="48rem">
+      <div className="h-[48rem]">
         <Progress variant="slim" margin={0} />
-      </DialogContent>
+      </div>
     );
   }
 
   const { assets, totalAssetCount } = assetsQuery.data;
 
   return (
-    <DialogContent padding="0" height="100vh" className="max-h-[48rem]">
+    <div className="h-screen max-h-[48rem]">
       <div className="grid h-full grid-rows-[repeat(4,auto)_1fr_repeat(2,auto)]">
-        <div className="flex items-center space-x-12 p-24">
-          <AttachmentIcon className="h-32 w-32 rounded bg-brand-100 p-2 text-brand-500" />
-          <Heading as="h4" className="text-lg font-medium">
-            Select Asset
-          </Heading>
-        </div>
+        <DialogHeader />
 
         <Divider margin="0" />
 
@@ -151,28 +147,22 @@ export default function AssetDialog() {
                 return (
                   <tr className="h-[60px] overflow-x-auto border-b" key={asset.id}>
                     <TableCell className="min-w-[60px]">
-                      {isSingleSelect ? (
-                        <IconButton
-                          variant="ghost"
-                          variantColor="primary"
-                          icon={FieldRelation}
-                          mx={12}
-                          onClick={() => onSelect(asset)}
-                        />
-                      ) : (
-                        <div className="grid place-items-center">
+                      <div className="grid place-items-center">
+                        {isSingleSelect ? (
+                          <SelectAssetButton onClick={() => onSelect(asset)} />
+                        ) : (
                           <Checkbox
                             checked={isSelected}
                             onCheckedChange={() => {
                               if (isSelected) {
-                                return onDeselect(asset);
+                                return removeFromSelection(asset);
                               }
 
                               onSelect(asset);
                             }}
                           />
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="min-w-[130px]"></TableCell>
                     <TableCell className="min-w-[80px]">
@@ -222,14 +212,13 @@ export default function AssetDialog() {
         />
 
         {!isSingleSelect ? (
-          <div className="flex justify-end rounded-b-lg bg-brand-50 px-24 py-16">
-            <Button onClick={() => onCloseDialog(selectedAssets)} size="large" disabled={selectedAssets.length === 0}>
-              Add selected assets {selectedAssets.length > 1 ? `(${selectedAssets.length})` : ''}
-            </Button>
-          </div>
+          <DialogFooter
+            closeDialog={() => closeDialogWithResult(selectedAssets)}
+            selectedAssetCount={selectedAssets.length}
+          />
         ) : null}
       </div>
-    </DialogContent>
+    </div>
   );
 }
 
@@ -248,6 +237,34 @@ const TableCell = ({ children, className }: { children?: ReactNode; className?: 
     </td>
   );
 };
+
+function SelectAssetButton({ onClick }: { onClick: () => void }) {
+  return <IconButton variant="ghost" variantColor="primary" icon={FieldRelation} onClick={onClick} />;
+}
+
+function DialogHeader() {
+  return (
+    <div className="flex items-center space-x-12 p-24">
+      <AttachmentIcon className="h-32 w-32 rounded bg-brand-100 p-2 text-brand-500" />
+      <Heading as="h4" className="text-lg font-medium">
+        Select Asset
+      </Heading>
+    </div>
+  );
+}
+
+function DialogFooter({ closeDialog, selectedAssetCount }: { closeDialog: () => void; selectedAssetCount: number }) {
+  const showAssetCount = selectedAssetCount > 1;
+  const allowSubmit = selectedAssetCount > 0;
+
+  return (
+    <div className="flex justify-end rounded-b-lg bg-brand-50 px-24 py-16">
+      <Button onClick={closeDialog} size="large" disabled={!allowSubmit}>
+        Add selected assets {showAssetCount ? `(${selectedAssetCount})` : ''}
+      </Button>
+    </div>
+  );
+}
 
 const getResizedHygraphUrl = (url: string, handle: string) => {
   return url.slice(0, -handle.length) + 'output=format:jpg/resize=width:59,height:59,fit:crop/' + handle;

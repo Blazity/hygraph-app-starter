@@ -4,7 +4,6 @@ import { BaukastenProvider as BaukastenThemeProvider } from '@hygraph/baukasten'
 
 interface BaukastenProvider {
   children: React.ReactNode;
-  global?: boolean;
 }
 
 const font =
