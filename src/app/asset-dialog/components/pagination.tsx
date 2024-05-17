@@ -1,6 +1,5 @@
-import { Select, SelectTrigger, SelectValue } from '@/components/select';
-import { Button } from '@hygraph/baukasten';
-import { SelectContent, SelectItem } from '@radix-ui/react-select';
+import { Select } from '@headlessui/react';
+import { Button, CheckBox } from '@hygraph/baukasten';
 
 // TODO: improve ui
 export const Pagination = ({
@@ -34,18 +33,25 @@ export const Pagination = ({
   };
 
   return (
-    <div className="flex justify-between text-m text-slate-500">
+    <div className="flex items-center justify-between p-4 text-m text-slate-500">
       <p>{totalItems} entries</p>
 
-      <div>
+      <div className="flex space-x-32">
         <Button onClick={previousPage} disabled={!hasPreviousPage} size="medium" variant="ghost" variantColor="primary">
           Previous
         </Button>
 
-        <span>
-          Page{' '}
-          <input className="w-[50px]" value={page} type="number" onChange={(e) => setPage(Number(e.target.value))} /> of{' '}
-          {pageCount}
+        <span className="space-x-2">
+          <span>Page</span>
+          <input
+            className="w-[50px] rounded-sm border border-slate-300 py-1 text-center text-black"
+            value={page}
+            type="number"
+            min={1}
+            max={pageCount}
+            onChange={(e) => setPage(Number(e.target.value))}
+          />
+          <span>of {pageCount}</span>
         </span>
 
         <Button onClick={nextPage} disabled={!hasNextPage} size="medium" variant="ghost" variantColor="primary">
@@ -53,22 +59,18 @@ export const Pagination = ({
         </Button>
       </div>
 
-      <div className="flex">
-        Show
-        <Select value={String(resultsPerPage)} onValueChange={(e) => setResultsPerPage(Number(e))}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue />
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="5">5</SelectItem>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="15">15</SelectItem>
-            <SelectItem value="25">25</SelectItem>
-            <SelectItem value="50">50</SelectItem>
-            <SelectItem value="75">75</SelectItem>
-            <SelectItem value="100">100</SelectItem>
-          </SelectContent>
+      <div className="flex items-center space-x-2">
+        <span>Show</span>
+        <Select
+          value={String(resultsPerPage)}
+          onChange={(e) => setResultsPerPage(Number(e.target.value))}
+          className="rounded border border-slate-300 px-2 py-1.5 text-black"
+        >
+          {[5, 10, 15, 20, 25, 50, 75, 100].map((resultsPerPage) => (
+            <option key={resultsPerPage} value={String(resultsPerPage)}>
+              {resultsPerPage}
+            </option>
+          ))}
         </Select>
       </div>
     </div>

@@ -63,7 +63,7 @@ export default function AssetDialog() {
   const { assets, totalAssetCount } = assetsQuery.data;
 
   return (
-    <DialogContent padding="0" height="48rem">
+    <DialogContent padding="0" height="100vh" className="max-h-[48rem]">
       <div className="grid h-full grid-rows-[repeat(4,auto)_1fr_repeat(2,auto)]">
         <div className="flex items-center space-x-12 p-24">
           <AttachmentIcon className="h-32 w-32 rounded bg-brand-100 p-2 text-brand-500" />
@@ -208,13 +208,13 @@ export default function AssetDialog() {
           totalItems={totalAssetCount}
         />
 
-        <div className="flex justify-end bg-brand-50 px-24 py-16">
-          {!isSingleSelect ? (
+        {!isSingleSelect ? (
+          <div className="flex justify-end bg-brand-50 px-24 py-16">
             <Button onClick={() => onCloseDialog(selectedAssets)} size="large" disabled={selectedAssets.length === 0}>
               Add selected assets {selectedAssets.length > 1 ? `(${selectedAssets.length})` : ''}
             </Button>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </DialogContent>
   );
