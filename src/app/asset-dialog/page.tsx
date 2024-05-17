@@ -12,6 +12,15 @@ import { Pagination } from './components/pagination';
 import { HygraphAsset, useHygraphAssets } from './useHygraphAssets';
 import AttachmentIcon from '/public/icons/attachment.svg';
 
+function User({ name, picture }: { name: string; picture?: string }) {
+  return (
+    <div className="flex items-center space-x-1">
+      {picture ? <img src={picture} className="h-24 w-24 rounded-full" /> : null}
+      <span>{name}</span>
+    </div>
+  );
+}
+
 export default function AssetDialog() {
   const { onCloseDialog, isSingleSelect, context, excludedAssets } = useUiExtensionDialog<
     HygraphAsset[],
@@ -37,8 +46,6 @@ export default function AssetDialog() {
     includedIds: showOnlySelectedAssets ? selectedAssetsSnapshot.map((asset) => asset.id) : undefined,
     excludedIds: excludedAssets
   });
-
-  // const pagination = usePagination({ totalItems: assetsQuery.data?.totalAssetCount ?? 0 });
 
   const onSelect = (asset: HygraphAsset) => {
     if (isSingleSelect) {
@@ -125,9 +132,9 @@ export default function AssetDialog() {
                 <TableHeader className="w-[80px]">Preview</TableHeader>
                 <TableHeader>ID</TableHeader>
                 <TableHeader>Created At</TableHeader>
-                {/* TODO: created by */}
+                <TableHeader>Created By</TableHeader>
                 <TableHeader>Updated At</TableHeader>
-                {/* TODO: updated by */}
+                <TableHeader>Updated By</TableHeader>
                 <TableHeader>Handle</TableHeader>
                 <TableHeader>File Name</TableHeader>
                 <TableHeader>Height</TableHeader>
@@ -180,7 +187,13 @@ export default function AssetDialog() {
                       </Pill>
                     </TableCell>
                     <TableCell>{formatDate(new Date(asset.createdAt))}</TableCell>
+                    <TableCell>
+                      <User name={asset.createdBy.name} picture={asset.createdBy.picture} />
+                    </TableCell>
                     <TableCell>{formatDate(new Date(asset.updatedAt))}</TableCell>
+                    <TableCell>
+                      <User name={asset.updatedBy.name} picture={asset.updatedBy.picture} />
+                    </TableCell>
                     <TableCell>{asset.handle}</TableCell>
                     <TableCell>{asset.fileName}</TableCell>
                     <TableCell>
