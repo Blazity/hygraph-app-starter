@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { gql, request } from 'graphql-request';
 
 export type HygraphAsset = {
   createdAt: string;
@@ -22,22 +23,57 @@ export type HygraphAsset = {
   };
 };
 
-type ResponseType = {
-  data: {
-    assetsConnection: {
-      edges: {
-        node: HygraphAsset;
-      }[];
-      pageInfo: {
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-      };
-      aggregate: {
-        count: number;
-      };
+type Data = {
+  assetsConnection: {
+    edges: {
+      node: HygraphAsset;
+    }[];
+    pageInfo: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+    };
+    aggregate: {
+      count: number;
     };
   };
 };
+
+const query = gql`
+  query Assets($first: Int!, $skip: Int!, $where: AssetWhereInput!) {
+    assetsConnection(first: $first, skip: $skip, where: $where) {
+      edges {
+        node {
+          createdAt
+          fileName
+          handle
+          height
+          id
+          size
+          stage
+          updatedAt
+          width
+          mimeType
+          url
+          createdBy {
+            picture
+            name
+          }
+          updatedBy {
+            picture
+            name
+          }
+        }
+      }
+      aggregate {
+        count
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+`;
 
 export const useHygraphAssets = ({
   apiBase,
@@ -57,55 +93,25 @@ export const useHygraphAssets = ({
   const first = resultsPerPage;
   const skip = resultsPerPage * (pageNumber - 1);
 
-  const idNotInFilter = `id_not_in: [${excludedIds.map((id) => `"${id}"`).join(',')}]`;
-  const idInFilter = includedIds ? `,id_in: [${includedIds.map((id) => `"${id}"`).join(',')}]` : '';
-
-  const whereFilter = `,where: {  ${idNotInFilter} ${idInFilter} }`;
-
   const assets = useQuery({
     queryKey: ['assets', { skip, first, excludedIds, includedIds }],
     queryFn: async () => {
-      const resp = await fetch(apiBase, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` },
-        body: JSON.stringify({
-          query: `{
-              assetsConnection(first: ${first}, skip: ${skip} ${whereFilter}) {
-                edges {
-                  node {
-                    createdAt
-                    fileName
-                    handle
-                    height
-                    id
-                    size
-                    stage
-                    updatedAt
-                    width
-                    mimeType
-                    url
-                    createdBy {
-                      picture
-                      name
-                    }
-                    updatedBy {
-                      picture
-                      name
-                    }
-                  }
-                }
-                aggregate {
-                  count
-                }
-                pageInfo {
-                  hasNextPage
-                  hasPreviousPage
-                }
-              }
-            }`
-        })
+      const data = await request<Data>({
+        url: apiBase,
+        document: query,
+        variables: {
+          first,
+          skip,
+          where: {
+            id_not_in: excludedIds,
+            id_in: includedIds
+          }
+        },
+        requestHeaders: {
+          Authorization: `Bearer ${authToken}`
+        }
       });
-      const { data } = (await resp.json()) as ResponseType;
+
       const assets = data.assetsConnection.edges.map((edge) => edge.node);
       return {
         assets: assets,
