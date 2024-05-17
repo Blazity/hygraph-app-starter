@@ -209,7 +209,7 @@ export default function AssetDialog() {
         />
 
         {!isSingleSelect ? (
-          <div className="flex justify-end bg-brand-50 px-24 py-16">
+          <div className="flex justify-end rounded-b-lg bg-brand-50 px-24 py-16">
             <Button onClick={() => onCloseDialog(selectedAssets)} size="large" disabled={selectedAssets.length === 0}>
               Add selected assets {selectedAssets.length > 1 ? `(${selectedAssets.length})` : ''}
             </Button>
